@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interactive web reader for the Trial Moderator Handbook.">
+<title>Trial Moderator Handbook</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0d12;--panel:#121722;--panel2:#171e2b;--line:#263244;--text:#e8edf5;--muted:#9aa8bc;--accent:#77a9ff;--accent2:#9cc1ff;--green:#75d6ad}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 20% 0%,#18243a 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.7 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.layout{max-width:1240px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;padding:28px 22px}
+.sidebar{position:sticky;top:22px;height:calc(100vh - 44px);overflow:auto;background:#101620d9;border:1px solid var(--line);border-radius:18px;padding:20px}
+.brand{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:800}.side-title{font-size:19px;font-weight:750;line-height:1.25;margin:9px 0 18px}
+.search{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#0b111b;color:var(--text);outline:none}.search:focus{border-color:var(--accent)}
+nav{display:grid;gap:4px;margin-top:16px}nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;font-size:13px}nav a:hover,nav a.active{background:#1d2a3e;color:var(--text)}
+.reading{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.progress-track{height:6px;background:#263244;border-radius:99px;overflow:hidden;margin:8px 0}.progress-fill{height:100%;width:0;background:var(--accent);transition:width .2s}
+main{min-width:0}.hero{padding:38px 40px;border:1px solid #30415c;border-radius:22px;background:linear-gradient(135deg,#1a2940,#111925 72%);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:240px;height:240px;border:1px solid #ffffff12;border-radius:50%;right:-75px;top:-95px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff05}
+.eyebrow{color:var(--accent2);font-size:11px;letter-spacing:.2em;font-weight:800}.hero h1{font-size:clamp(34px,5vw,54px);line-height:1.05;letter-spacing:-.04em;margin:12px 0}.hero p{color:#b8c6d9;max-width:600px;margin:0}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.pill{font-size:12px;padding:5px 10px;border:1px solid #ffffff20;border-radius:99px;color:#d6e4f7}
+section{scroll-margin-top:22px;margin-top:22px;padding:27px 30px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#141b27,#10151e)}section h2{font-size:21px;line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}section p{color:#c6d0de;margin:9px 0}ul{padding-left:21px;margin:12px 0 0}li{padding:4px 0 4px 3px;color:#d5deea}li::marker{color:var(--accent)}
+.callout{border-left:3px solid var(--accent);padding:12px 16px;background:#182337;border-radius:0 10px 10px 0;color:#dce8f8;margin-top:15px}
+.schedule{display:grid;gap:9px;margin-top:15px}.day{display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:start;padding:12px 14px;border:1px solid var(--line);background:#111925;border-radius:11px}.day strong{color:var(--accent2);font-size:13px}.day span{color:#d1dbea}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}.action{padding:15px;border:1px solid var(--line);border-radius:12px;background:#111925}.action h3{font-size:14px;color:var(--accent2);margin:0 0 6px}.action p{font-size:13px;margin:0}
+.checklist{list-style:none;padding:0}.checklist li{display:flex;gap:10px;align-items:flex-start}.checklist input{margin-top:7px;accent-color:var(--accent);flex:0 0 auto}
+footer{text-align:center;color:#718096;font-size:12px;padding:28px 0 10px}
+.empty{display:none;color:var(--muted);padding:20px;text-align:center}
+@media(max-width:850px){.layout{grid-template-columns:1fr;padding:14px}.sidebar{position:relative;top:0;height:auto}.sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr))}.reading{margin-top:12px}.hero{padding:28px 24px}section{padding:22px}.actions{grid-template-columns:1fr}}
+@media(max-width:480px){.layout{padding:10px;gap:14px}.sidebar{padding:15px}.sidebar nav{grid-template-columns:1fr 1fr}.hero{padding:24px 20px}.day{grid-template-columns:58px 1fr;gap:9px}}
+@media print{body{background:#fff;color:#111}.layout{display:block;max-width:none}.sidebar{display:none}.hero,section{background:#fff;color:#111;border:1px solid #bbb;break-inside:avoid}.hero p,section p,li,.day span{color:#222}.eyebrow,.day strong,.action h3{color:#234d86}.pill{color:#222;border-color:#aaa}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand">STAFF TRAINING</div>
+  <div class="side-title">Trial Moderator<br>Handbook</div>
+  <input id="search" class="search" type="search" placeholder="Search handbook..." aria-label="Search handbook">
+  <nav id="nav">
+    <a href="#welcome">Welcome</a>
+    <a href="#conduct">1. General Conduct</a>
+    <a href="#activity">2. Activity & Communication</a>
+    <a href="#moderation">3. Moderation Basics</a>
+    <a href="#tickets">4. Handling Tickets</a>
+    <a href="#teamwork">5. Teamwork & Confidentiality</a>
+    <a href="#never">6. Things You Must Never Do</a>
+    <a href="#schedule">7. 7-Day Trial Schedule</a>
+    <a href="#end">8. End of Trial</a>
+    <a href="#actions">9. Moderation Actions</a>
+    <a href="#before">10. Before You Punish</a>
+    <a href="#escalate">11. When to Escalate</a>
+    <a href="#remember">Remember</a>
+  </nav>
+  <div class="reading">
+    <div><span id="progressText">0 of 13 sections read</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <button id="reset" style="border:0;background:none;color:#9aa8bc;padding:4px 0;cursor:pointer">Reset reading progress</button>
+  </div>
+</aside>
+<main>
+<header class="hero">
+  <div class="eyebrow">STAFF TRAINING · TRIAL MODERATOR PROGRAM</div>
+  <h1>TRIAL MODERATOR<br>HANDBOOK</h1>
+  <p>A simple guide to your role, responsibilities, and 7-day trial.</p>
+  <div class="meta"><span class="pill">7-day program</span><span class="pill">Staff handbook</span><span class="pill">Day 5 quiz</span></div>
+</header>
+
+<section id="welcome" data-section>
+<h2>Welcome to the Staff Team</h2>
+<p>Congratulations on becoming a Trial Moderator. During your 7-day trial, you will learn how the server is moderated, help members, and show that you can handle the role responsibly. This handbook covers the basics. Please read it carefully because you will complete a short quiz on Day 5.</p>
+</section>
+
+<section id="conduct" data-section>
+<h2>1. General Conduct</h2>
+<ul><li>Be respectful to members and other staff, even when conversations become difficult.</li><li>Stay calm and avoid arguing with members.</li><li>Treat everyone fairly. Do not give friends special treatment.</li><li>Use your staff role responsibly and never use permissions for personal reasons.</li></ul>
+</section>
+
+<section id="activity" data-section>
+<h2>2. Activity and Communication</h2>
+<ul><li>Be reasonably active and keep an eye on the server when you are available.</li><li>Join conversations when you can help, but do not interrupt or create arguments.</li><li>If you expect to be away for an extended period, let Management or a Supervisor know.</li><li>Ask questions if you are unsure about a rule or what action to take.</li></ul>
+</section>
+
+<section id="moderation" data-section>
+<h2>3. Moderation Basics</h2>
+<ul><li>Know the server rules before taking moderation action.</li><li>Check the context and gather the relevant information before acting.</li><li>Only issue warnings or other punishments when there is a valid reason.</li><li>If a situation is serious or unclear, ask a Supervisor or higher-ranking staff member for help.</li><li>Never threaten members or use moderation tools to settle personal disagreements.</li></ul>
+</section>
+
+<section id="tickets" data-section>
+<h2>4. Handling Tickets</h2>
+<ul><li>Read the member's request before replying.</li><li>Keep your responses clear, polite, and helpful.</li><li>Do not enter a ticket just to say “Hi” or “Hey” and then leave without helping.</li><li>One staff member should normally handle a ticket. Bring in another staff member only when assistance is needed.</li><li>If you cannot resolve the issue, explain that you are escalating it and contact a Supervisor.</li></ul>
+</section>
+
+<section id="teamwork" data-section>
+<h2>5. Teamwork and Confidentiality</h2>
+<ul><li>Follow reasonable instructions from Supervisors and Management.</li><li>Keep staff discussions, reports, and private member information within the appropriate staff channels.</li><li>Do not share screenshots or details from private staff discussions without permission.</li><li>Report concerns about staff conduct through the proper staff channel rather than arguing publicly.</li></ul>
+</section>
+
+<section id="never" data-section>
+<h2>6. Things You Must Never Do</h2>
+<ul><li>Abuse your permissions or punish someone for personal reasons.</li><li>Show favoritism or ignore rule-breaking because someone is your friend.</li><li>Share confidential staff information.</li><li>Make promises or decisions that are outside your authority.</li><li>Pretend to know an answer when you are unsure—ask a Supervisor instead.</li></ul>
+</section>
+
+<section id="schedule" data-section>
+<h2>7. Your 7-Day Trial Schedule</h2>
+<div class="schedule">
+<div class="day"><strong>Day 1</strong><span>Read this handbook and become familiar with the server rules.</span></div>
+<div class="day"><strong>Day 2</strong><span>Learn your responsibilities and the expectations for Trial Moderators.</span></div>
+<div class="day"><strong>Day 3</strong><span>Stay active and practise helping members in the server.</span></div>
+<div class="day"><strong>Day 4</strong><span>Learn the basic moderation commands and ticket process.</span></div>
+<div class="day"><strong>Day 5</strong><span>Complete the mandatory quiz based on this handbook.</span></div>
+<div class="day"><strong>Day 6</strong><span>Demonstrate good judgement, communication, and teamwork.</span></div>
+<div class="day"><strong>Day 7</strong><span>Take part in the final performance review with Management.</span></div>
+</div>
+</section>
+
+<section id="end" data-section>
+<h2>8. End of Trial</h2>
+<p>At the end of the 7 days, Management will review your activity, conduct, teamwork, and understanding of the role. You may pass and become a Moderator, have your trial extended if more time is needed, or not pass the trial. The outcome will be communicated to you by Management.</p>
+<h2 style="margin-top:24px">Final Note</h2>
+<p>Being a moderator is about more than having permissions. It means being fair, helpful, responsible, and willing to learn. You are not expected to know everything straight away. If you are unsure, ask for guidance and learn from the feedback you receive.</p>
+<div class="callout"><strong>GOOD LUCK WITH YOUR TRIAL</strong></div>
+</section>
+
+<section id="actions" data-section>
+<h2>9. Understanding Moderation Actions</h2>
+<p>Moderation actions help keep the server safe and respectful. Always check the situation and follow the server's punishment guidelines before taking action. Trial Moderators should only use actions they have been authorized to use.</p>
+<div class="actions">
+<div class="action"><h3>Warning (Warn)</h3><p>A formal reminder that a member has broken a rule. Explain which rule was broken and keep the message polite. Record the warning if the server requires it.</p></div>
+<div class="action"><h3>Timeout</h3><p>Temporarily prevents a member from sending messages or participating in conversations. Use it when a member needs a pause from the chat or has continued breaking rules. Choose a duration that follows the server's guidelines.</p></div>
+<div class="action"><h3>Kick</h3><p>Removes a member from the server, but they may be able to rejoin if they have an invite. This is a more serious action and should only be used when authorized and justified.</p></div>
+<div class="action"><h3>Ban</h3><p>Blocks a member from the server. This is a serious action and should generally be handled by experienced staff or Management unless Trial Moderators have explicitly been given permission for a specific situation.</p></div>
+<div class="action"><h3>Strike / Staff Warning</h3><p>A staff-side consequence for not following staff expectations. It is different from a warning given to a server member and should be handled through the staff process.</p></div>
+</div>
+</section>
+
+<section id="before" data-section>
+<h2>10. Before You Punish a Member</h2>
+<ul class="checklist">
+<li><input type="checkbox">Read the full conversation and check the context.</li>
+<li><input type="checkbox">Make sure a server rule has actually been broken.</li>
+<li><input type="checkbox">Check whether the member has already received warnings for the same issue.</li>
+<li><input type="checkbox">Use the least severe action that reasonably addresses the situation, following server policy.</li>
+<li><input type="checkbox">Give a clear, neutral reason for the action.</li>
+<li><input type="checkbox">Keep a record in the appropriate moderation log if required.</li>
+<li><input type="checkbox">Ask a Supervisor or Management if you are unsure. Do not guess or act outside your permissions.</li>
+</ul>
+</section>
+
+<section id="escalate" data-section>
+<h2>11. When to Escalate</h2>
+<p>Contact a Supervisor or Management for serious threats, harassment, repeated rule-breaking, ban decisions, appeals, or any situation you are not confident handling. Do not promise a particular outcome to a member. Pass on the relevant details and let the appropriate staff member decide what happens next.</p>
+</section>
+
+<section id="remember" data-section>
+<h2>Remember</h2>
+<div class="callout">Moderation is about keeping the community safe—not about using the strongest punishment.</div>
+</section>
+
+<div class="empty" id="empty">No matching handbook sections found.</div>
+<footer>STAFF MANAGEMENT TEAM · TRIAL MODERATOR PROGRAM</footer>
+</main>
+</div>
+<script>
+const sections=[...document.querySelectorAll('[data-section]')];
+const links=[...document.querySelectorAll('#nav a')];
+const progressKey='trialModeratorHandbookRead';
+let read=new Set(JSON.parse(localStorage.getItem(progressKey)||'[]'));
+function updateProgress(){
+  document.querySelectorAll('[data-section]').forEach(s=>{if(read.has(s.id))s.dataset.read='true';else delete s.dataset.read});
+  document.getElementById('progressText').textContent=`${read.size} of ${sections.length} sections read`;
+  document.getElementById('progressFill').style.width=(read.size/sections.length*100)+'%';
+  localStorage.setItem(progressKey,JSON.stringify([...read]));
+}
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){read.add(e.target.id);updateProgress();links.forEach(a=>a.classList.toggle('active',a.hash==='#'+e.target.id));}}),{threshold:.35});
+sections.forEach(s=>observer.observe(s));
+document.getElementById('reset').addEventListener('click',()=>{read.clear();updateProgress()});
+document.getElementById('search').addEventListener('input',e=>{
+ const q=e.target.value.trim().toLowerCase();let shown=0;
+ sections.forEach(s=>{const match=!q||s.innerText.toLowerCase().includes(q);s.style.display=match?'':'none';if(match)shown++});
+ document.getElementById('empty').style.display=shown?'none':'block';
+});
+</script>
+</body>
+</html>
